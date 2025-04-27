@@ -1,14 +1,18 @@
-FROM debian:latest
+# Gunakan image resmi tmate-ssh-server dari Docker Hub
+FROM tmate/tmate-ssh-server:2.3.0
 
-# Set non-interactive mode
+# Set environment variable (opsional)
+ARG REGION=ap
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Update, install tmate
-RUN apt update && apt upgrade -y && apt install -y \
-    ssh tmate
+# Install SSH dan curl (kalau belum ada)
+RUN apt update && apt upgrade -y && apt install -y curl
 
-# Expose SSH port
-EXPOSE 22
+# Setup root login password (default 'craxid')
+RUN echo 'root:craxid' | chpasswd
 
-# Run tmate in the background
-CMD tmate -F
+# Expose SSH port dan tmate API port
+EXPOSE 22 4040
+
+# Start SSH server dan tmate secara bersamaan
+CMD /usr/sbin/sshd -D & tmate -F
