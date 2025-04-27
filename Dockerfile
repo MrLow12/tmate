@@ -7,8 +7,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && apt upgrade -y && apt install -y \
     ssh tmate
 
-# Expose the SSH port
+# Expose SSH port
 EXPOSE 22
 
-# Run tmate when the container starts
-CMD tmate
+# Run tmate in background and redirect output to a file
+CMD tmate -F & tail -f /tmp/tmate.log
